@@ -1,5 +1,3 @@
-// Reference:  This list was adapted from the table located here:
-//     http://www.phy.mtu.edu/~suits/notefreqs.html
 const float  note_C0 = 16.35;  //C0
 const float  note_Db0 = 17.32;  //C#0/Db0
 const float  note_D0 = 18.35;  //D0
