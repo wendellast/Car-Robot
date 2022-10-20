@@ -141,7 +141,7 @@ void buzina() {
 
     xz = random(1, 5); // Vai de 0 a 4
     
-    if (xz == 2)    {
+    if (xz == 2)    { // Musica robot
     beep(buzzerPin, note_A7, 100);  //A
     beep(buzzerPin, note_G7, 100);  //G
     beep(buzzerPin, note_E7, 100);  //E
@@ -160,167 +160,41 @@ void buzina() {
     beep(buzzerPin, note_C8, 100);  //C
     }
 
-    else if (xz == 3){
-tone(speakPin, f5s);
-    delay(Qnote+Enote);
-    noTone(speakPin);
-    delay(50);
-  
-    tone(speakPin, d5);
-    delay(Hnote);
-    noTone(speakPin);
-    delay(50);
-  
-    tone(speakPin, d5);
-    delay(Snote);
-    noTone(speakPin);
-    delay(12.5);
-  
-    tone(speakPin, e5);
-    delay(Snote);
-    noTone(speakPin);
-    delay(50);
-  
-    tone(speakPin, f5);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, e5);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, d5);
-    delay(Enote);
-    noTone(speakPin);
-    delay(50);
-  
-    tone(speakPin, c5s);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, d5);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, e5);
-    delay(Enote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, f5s);
-    delay(Qnote+Enote);
-    noTone(speakPin);
-    delay(50);
-  
-    tone(speakPin, b5);
-    delay(Qnote+Enote);
-    noTone(speakPin);
-    delay(50);
-  
-    tone(speakPin, b4);
-    delay(Enote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, c5s);
-    delay(Enote);
-    noTone(speakPin);
-    delay(50);
-  
-    tone(speakPin, d5);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, e5);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, d5);
-    delay(Enote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, c5s);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, a5);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-  
-    tone(speakPin, g5);
-    delay(Enote);
-    noTone(speakPin);
-    delay(50);
+    else if (xz == 3){ // Musica JOJO
+    beep(buzzerPin, f5s, Qnote+Enote);
+    beep(buzzerPin,  d5, Hnote);
+    beep(buzzerPin,  d5, Snote);
+    beep(buzzerPin,  e5, Snote);
+    beep(buzzerPin,  f5, Enote+Snote);
+    beep(buzzerPin,  e5, Enote+Snote);
+    beep(buzzerPin,  d5, Enote);
+    beep(buzzerPin,  c5s, Enote+Snote);
+    beep(buzzerPin,  d5, Enote+Snote);
+    beep(buzzerPin,  e5, Enote);
+    beep(buzzerPin, f5s, Qnote+Enote);
+    beep(buzzerPin, b5, Qnote+Enote);
+    beep(buzzerPin, b4, Enote);
+    beep(buzzerPin, c5, Enote);
+    beep(buzzerPin,  d5, Enote+Snote);
+    beep(buzzerPin,  e5, Enote+Snote);
+    beep(buzzerPin,  d5, Enote);
+    beep(buzzerPin,  c5s, Enote+Snote);
+    beep(buzzerPin,  a5, Enote+Snote);
+    beep(buzzerPin,  g5, Enote);
+    beep(buzzerPin,  f6, Qnote+Enote);
+    beep(buzzerPin,  d6, Hnote);
+    beep(buzzerPin,  d6, Snote);
+    beep(buzzerPin,  e6, Snote);
+    beep(buzzerPin,  f6, Enote+Snote);
+    beep(buzzerPin,  e6, Enote+Snote);
+    beep(buzzerPin,  d6, Enote;
+    beep(buzzerPin,  c6, Enote+Snote);
+    beep(buzzerPin,  d6, Enote+Snote);
+    beep(buzzerPin,  e6, Enote);
+   beep(buzzerPin,  f6, Qnote+Enote);
+     beep(buzzerPin,  b6, Qnote+Enote);
 
-    tone(speakPin, f6s);
-    delay(Qnote+Enote);
-    noTone(speakPin);
-    delay(50);
-
-    tone(speakPin, d6);
-    delay(Hnote);
-    noTone(speakPin);
-    delay(50);
-
-    tone(speakPin, d6);
-    delay(Snote);
-    noTone(speakPin);
-    delay(12.5);
-
-    tone(speakPin, e6);
-    delay(Snote);
-    noTone(speakPin);
-    delay(50);
-
-    tone(speakPin, f6);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-
-    tone(speakPin, e6);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-
-    tone(speakPin, d6);
-    delay(Enote);
-    noTone(speakPin);
-    delay(50);
-
-    tone(speakPin, c6s);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-
-    tone(speakPin, d6);
-    delay(Enote+Snote);
-    noTone(speakPin);
-    delay(25);
-
-    tone(speakPin, e6);
-    delay(Enote);
-    noTone(speakPin);
-    delay(25);
-
-    tone(speakPin, f6s);
-    delay(Qnote+Enote);
-    noTone(speakPin);
-    delay(50);
-
-    tone(speakPin, b6);
-    delay(Qnote+Enote);
-    noTone(speakPin);
-    delay(50);
-
+  
     tone(speakPin, b6);
     delay(Enote);
     noTone(speakPin);
