@@ -3,53 +3,55 @@
 #include "music_jojo.h"
 #include <Servo.h>
 
-SoftwareSerial bluetooth(8, 7);
+SoftwareSerial mySerial(8, 7);  // RX | TX
 
-char comando;  // Comando BLUE
+int servoPin = 6;
+int servoAngle = 0;
+
+
+char command;  // Comando BLUE
 
 //Servo Motor
 
-Servo servoCabeca;
+Servo servo;
 //Servo Motor
 
 //Motores
-int IN1 = 4;
-int IN2 = 5;
+int IN1 = 0;
+int IN2 = 0;
 
-int IN3 = 6;
-int IN4 = 1;
+int IN3 = 0;
+int IN4 = 0;
 //Motores
 
 int xz = 0;  // Musica sorted
 
-int led1_azul = 9;  // Led1 - Azul Alerta
+int led1_azul = 9;       // Led1 - Azul Alerta
 int led1_vermelho = 13;  // Led1 - Azul Alerta
 
 int buzzerPin = 10;  // Buzina
 
-bool buttom = 1;
 int buttonPin = 12;
 
 int estadoButton = 0;
 int vezes = 0;
 
 void setup() {
-  //Define os pinos como saida
-  Serial.begin(9600); 
-  bluetooth.begin(9600);
+  Serial.begin(9600);
+  mySerial.begin(9600);
+
+  servo.attach(servoPin);
+
 
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
 
-  
   pinMode(buzzerPin, OUTPUT);
 
-  pinMode(buttonPin , INPUT);
-  
-
-  
+  pinMode(buttonPin, INPUT);
+  naocabeca();
 }
 
 
@@ -57,82 +59,93 @@ void setup() {
 void loop() {
 
   estadoButton = digitalRead(buttonPin);
-  
 
-  
-  
-  if (estadoButton == 1) {
-    if (vezes >=2){
+
+
+
+  if (estadoButton == 1) {  // Botão escolha de modo
+    if (vezes > 2) {
       vezes = 0;
-      
-    }
-    vezes++;
+      vezes++;
+      Serial.println(vezes);
+      delay(500);
+
+    } else {
+       vezes++;
     Serial.println(vezes);
     delay(500);
- 
+    }
+
+   
   }
 
-  if (vezes == 1){
-      pinMode(led1_azul, OUTPUT);
-      pinMode(led1_vermelho, OUTPUT);
-      
-      digitalWrite(led1_azul , HIGH);
-      digitalWrite(led1_vermelho , LOW);
-    }
-    
-    
-    
-  else if (vezes == 2){
-      pinMode(led1_vermelho, OUTPUT);
-      pinMode(led1_azul, OUTPUT);
-      
-      digitalWrite(led1_vermelho , HIGH);
-      digitalWrite(led1_azul , LOW);
 
-    
-    
-   
-  } 
-  
-  
+
+  //MODO BLUE =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  if (vezes == 1) {
+
+    modBlue();
+  }
+
+  //MODO AUTO =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  else if (vezes == 2) {
+
+    modAlto();
+  }
+}
+
+void modAlto() {
+  servo.write(40);
+  delay(100);
+  servo.write(140);
   
  
-  while (bluetooth.available()) {
+}
 
-    comando = bluetooth.read();
+void modBlue() {
+  digitalWrite(servoPin, LOW);
 
-    if (comando == 'F') {
-      
-      frente();
-      
+  if (mySerial.available()) {
+
+    command = (mySerial.read());
+
+
+
+
+    if (command == 'F') {
+      led_azul();
+
+
+
     }
 
-    else if (comando == 'B') {
-      tras();
+    else if (command == 'B') {
+      led_vermelho();
     }
 
 
-    else if (comando == 'L') {
+    else if (command == 'L') {
       esquerda();
     }
 
-    else if (comando == 'R') {
+    else if (command == 'R') {
       direita();
     }
 
-    else if (comando == 'V') {
+    else if (command == 'V') {
       buzina();
     }
 
-    else if (comando == 'v') {
+    else if (command == 'v') {
       digitalWrite(buzzerPin, LOW);
     }
 
-    else if (comando == 'X') {
+    else if (command == 'X') {
       digitalWrite(led1_azul, HIGH);
     }
 
-    else if (comando == 'x') {
+    else if (command == 'x') {
       digitalWrite(led1_azul, LOW);
     }
 
@@ -144,6 +157,24 @@ void loop() {
 
 
 
+
+
+void led_vermelho() {
+  pinMode(led1_vermelho, OUTPUT);
+  pinMode(led1_azul, OUTPUT);
+
+  digitalWrite(led1_vermelho, HIGH);
+  digitalWrite(led1_azul, LOW);
+}
+
+void led_azul() {
+
+  pinMode(led1_azul, OUTPUT);
+  pinMode(led1_vermelho, OUTPUT);
+
+  digitalWrite(led1_azul, HIGH);
+  digitalWrite(led1_vermelho, LOW);
+}
 
 void frente() {
 
@@ -201,33 +232,34 @@ void iniciar() {
 }
 
 //FUNÇÃO PARA BALANCAR CABEÇA
-void naoCabeca() {
+void naocabeca() {
 
 
-  servoCabeca.write(40);
+  servo.write(40);
   delay(250);
-  servoCabeca.write(140);
+  servo.write(140);
   delay(250);
-  servoCabeca.write(40);
-  delay(250);
+  servo.write(40);
+
   //servoCabeca.write(140);
-  //delay(250);
-  servoCabeca.write(90);
   delay(250);
+  servo.write(90);
 }
 
 void cabeca_reta() {
-  servoCabeca.write(90);
+  servo.write(90);
   delay(100);
-  servoCabeca.write(10);
+  servo.write(10);
   delay(100);
 }
+
 void beep(int speakerPin, float noteFrequency, long noteDuration) {
   int x;
 
   float microsecondsPerWave = 1000000 / noteFrequency;
   float millisecondsPerCycle = 1000 / (microsecondsPerWave * 2);
   float loopTime = noteDuration * millisecondsPerCycle;
+
   for (x = 0; x < loopTime; x++) {
     digitalWrite(speakerPin, HIGH);
     delayMicroseconds(microsecondsPerWave);
@@ -259,7 +291,7 @@ void buzina() {
     beep(buzzerPin, note_C8, 100);  //C
   }
 
-  else if (xz == 3) {  // Musica JOJO
+  else if (xz == 7) {  // Musica JOJO
     beep(buzzerPin, f5s, Qnote + Enote);
     beep(buzzerPin, d5, Hnote);
     beep(buzzerPin, d5, Snote);
