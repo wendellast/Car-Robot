@@ -49,9 +49,14 @@ void setup() {
   pinMode(IN4, OUTPUT);
 
   pinMode(buzzerPin, OUTPUT);
-
   pinMode(buttonPin, INPUT);
+
+
+  //Carregando funções >> 
+  iniciar();
   naocabeca();
+  cabeca_reta();
+  
 }
 
 
@@ -72,8 +77,8 @@ void loop() {
 
     } else {
        vezes++;
-    Serial.println(vezes);
-    delay(500);
+      Serial.println(vezes);
+      delay(500);
     }
 
    
@@ -83,8 +88,8 @@ void loop() {
 
   //MODO BLUE =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
   if (vezes == 1) {
-
     modBlue();
+
   }
 
   //MODO AUTO =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -96,15 +101,21 @@ void loop() {
 }
 
 void modAlto() {
+  
+  servo.attach(servoPin);
+  
   servo.write(40);
   delay(100);
   servo.write(140);
+  delay(100);
+  servo.write(90);
   
  
 }
 
 void modBlue() {
   digitalWrite(servoPin, LOW);
+  servo.attach(0);
 
   if (mySerial.available()) {
 
@@ -115,7 +126,6 @@ void modBlue() {
 
     if (command == 'F') {
       led_azul();
-
 
 
     }
@@ -291,7 +301,7 @@ void buzina() {
     beep(buzzerPin, note_C8, 100);  //C
   }
 
-  else if (xz == 7) {  // Musica JOJO
+  else if (xz == 3) {  // Musica JOJO
     beep(buzzerPin, f5s, Qnote + Enote);
     beep(buzzerPin, d5, Hnote);
     beep(buzzerPin, d5, Snote);
