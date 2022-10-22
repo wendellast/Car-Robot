@@ -5,10 +5,10 @@
 
 SoftwareSerial bluetooth(8, 7);
 
-char comando; // Comando BLUE
+char comando;  // Comando BLUE
 
 //Servo Motor
-#define pinServo1 11
+
 Servo servoCabeca;
 //Servo Motor
 
@@ -23,14 +23,19 @@ int IN4 = 1;
 int xz = 0;  // Musica sorted
 
 int led1_azul = 9;  // Led1 - Azul Alerta
+int led1_vermelho = 13;  // Led1 - Azul Alerta
 
 int buzzerPin = 10;  // Buzina
 
+bool buttom = 1;
+int buttonPin = 12;
 
+int estadoButton = 0;
+int vezes = 0;
 
 void setup() {
   //Define os pinos como saida
-
+  Serial.begin(9600); 
   bluetooth.begin(9600);
 
   pinMode(IN1, OUTPUT);
@@ -38,27 +43,68 @@ void setup() {
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
 
-  pinMode(led1_azul, OUTPUT);
+  
   pinMode(buzzerPin, OUTPUT);
 
-  servoCabeca.attach(pinServo1);  
+  pinMode(buttonPin , INPUT);
   
-  iniciar();
-  cabeca_reta();
-  naoCabeca();
-  cabeca_reta();
+
+  
 }
 
 
 
 void loop() {
 
+  estadoButton = digitalRead(buttonPin);
+  
+
+  
+  
+  if (estadoButton == 1) {
+    if (vezes >=2){
+      vezes = 0;
+      
+    }
+    vezes++;
+    Serial.println(vezes);
+    delay(500);
+ 
+  }
+
+  if (vezes == 1){
+      pinMode(led1_azul, OUTPUT);
+      pinMode(led1_vermelho, OUTPUT);
+      
+      digitalWrite(led1_azul , HIGH);
+      digitalWrite(led1_vermelho , LOW);
+    }
+    
+    
+    
+  else if (vezes == 2){
+      pinMode(led1_vermelho, OUTPUT);
+      pinMode(led1_azul, OUTPUT);
+      
+      digitalWrite(led1_vermelho , HIGH);
+      digitalWrite(led1_azul , LOW);
+
+    
+    
+   
+  } 
+  
+  
+  
+ 
   while (bluetooth.available()) {
 
     comando = bluetooth.read();
 
     if (comando == 'F') {
+      
       frente();
+      
     }
 
     else if (comando == 'B') {
@@ -155,13 +201,13 @@ void iniciar() {
 }
 
 //FUNÇÃO PARA BALANCAR CABEÇA
-void naoCabeca(){
-  
+void naoCabeca() {
+
 
   servoCabeca.write(40);
-  delay(250);  
+  delay(250);
   servoCabeca.write(140);
-  delay(250); 
+  delay(250);
   servoCabeca.write(40);
   delay(250);
   //servoCabeca.write(140);
@@ -170,7 +216,7 @@ void naoCabeca(){
   delay(250);
 }
 
-void cabeca_reta(){
+void cabeca_reta() {
   servoCabeca.write(90);
   delay(100);
   servoCabeca.write(10);
