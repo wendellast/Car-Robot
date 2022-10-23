@@ -1,4 +1,4 @@
-#include <SoftwareSerial.h>
+
 #include <Ultrasonic.h>
 #include <Servo.h>
 
@@ -8,8 +8,15 @@
 #define Trig 2
 #define Echo 3
 
+
+int tempo = 100; //variável usada para definir o tempo de acionamento do buzzer
+int frequencia = 0; //variável usada para armazenar a frequencia que será usada no acionamento do buzzer
+unsigned long millisTarefa1 = millis(); //variável que recebe o tempo atual em milissegundos
+int temp = 250;
+
+
 //Config sensores >>> 
-SoftwareSerial mySerial(8, 7);  // RX | TX
+
 
 float distanciaObstaculo = 35;
 
@@ -61,7 +68,7 @@ int distanciaE;
 
 void setup() {
   Serial.begin(9600);
-  mySerial.begin(9600);
+  
 
   servo.attach(servoPin);
 
@@ -86,6 +93,8 @@ void setup() {
   iniciar();
   naocabeca();
   cabeca_reta();
+  
+
 }
 
 
@@ -159,14 +168,8 @@ void modAlto() {
 }
 
 void modBlue() {
-  digitalWrite(servoPin, LOW);
-  servo.attach(0);
-
-  if (mySerial.available()) {
-
-    command = (mySerial.read());
-
-
+  
+  command = Serial.read();
 
 
     if (command == 'F') {
@@ -207,7 +210,7 @@ void modBlue() {
     else {
       parado();
     }
-  }
+  
 }
 
 
@@ -339,7 +342,7 @@ int Radar() {
 void iniciar() {
 
   //Piscar LED AZUL
-
+  
 
   digitalWrite(led1_azul, HIGH);
   delay(500);
@@ -381,6 +384,18 @@ void cabeca_reta() {
   servo.write(10);
   delay(100);
 }
+void leds() {
+  if (millis() - millisTarefa1 > temp) {//Se o resultado da subtração de millis() - millisTarefa1 for maior que temp (250 milissegundo)
+    digitalWrite(led1_azul, HIGH);//Liga o LED azul
+    digitalWrite(led1_vermelho, LOW);//Desliga o LED vermelho
+  } else {//Senão
+    digitalWrite(led1_azul, LOW);//Desliga o azul
+    digitalWrite(led1_vermelho, HIGH);//Liga o LED vermelho
+  }
+  if ((millis() - millisTarefa1) > (2 * temp)) {//Se o resultado da subtração de millis() - millisTarefa1 for maior que 2 vezes temp (500 milissegundo)
+    millisTarefa1 = millis();//Atribui a millisTarefa1 o valor de millis()
+  }
+}
 
 void beep(int speakerPin, float noteFrequency, long noteDuration) {
   int x;
@@ -399,7 +414,7 @@ void beep(int speakerPin, float noteFrequency, long noteDuration) {
 
 void buzina() {
 
-  xz = random(2, 4);  // Vai de 0 a 4
+  xz = random(1, 4);  // Vai de 0 a 4
 
   if (xz == 2) {                    // Musica robot
     beep(buzzerPin, note_A7, 100);  //A
@@ -419,6 +434,20 @@ void buzina() {
     beep(buzzerPin, note_F7, 100);  //F
     beep(buzzerPin, note_C8, 100);  //C
   }
+
+  else if (xz ==1 ){ // Sireni
+    for (frequencia = 150; frequencia < 1800; frequencia += 1) { //Define frequencia igual a 150; verifica se frequencia é menor que 1800; realiza a soma frequencia = frequencia + 1
+    leds(); //Chama a função led
+    tone(buzzerPin, frequencia, tempo); //Aciona o led com frequência definida pelo for e tempo igual a 100 milissegundos
+    delay(1); //delay de 1 milissegundos
+  }
+  for (frequencia = 1800; frequencia > 150; frequencia -= 1) { //Define frequencia igual a 1800; verifica se frequencia é maior que 150; realiza a subtração frequencia = frequencia - 1
+    leds(); //Chama a função led
+    tone(buzzerPin, frequencia, tempo); //Aciona o led com frequência definida pelo for e tempo igual a 100 milissegundos
+    delay(1); //delay de 1 milissegundos
+  }
+  }
+
 
   else if (xz == 3) {  // Musica JOJO
     beep(buzzerPin, f5s, Qnote + Enote);
