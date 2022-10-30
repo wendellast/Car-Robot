@@ -1,0 +1,12 @@
+
+"COMANDO VOICE CAR ARDUINO"
+
+/*
+  FRENTE - carro ir para frente
+  TRAZ - Carro da ré
+  ESQUERDA - carro ir para esquerda
+  DIREITA - Carro ir par direita
+  BUZINA - Carro buzina
+  
+
+*/

@@ -1,67 +1,23 @@
-/*
-
-Colégio Modelo Luis Eduardo Magalhães 
-
-  Trabalho de Iniciação Cientifica 2º c 03/10/2022
-  Carro Arduino com modo automatico e Bluetooth
-
-Equipe :
-  > Alana de sá devoto; 
-
-  > Caio Maxímo;
-
-  > Matheus Italo;
-
-  > Matheus Breno;
-
-  > Pablo;
-
-  > Wendel Alves;
-
-*/
-
-
-
 #include <Ultrasonic.h>
 #include <Servo.h>
 
 #include "music.h"
 #include "music_jojo.h"
 
-#define Trig 2
-#define Echo 3
+#define pinoServo 8
+#define Trig 12
+#define Echo 4
 
-
-int tempo = 100;                         //variável usada para definir o tempo de acionamento do buzzer
-int frequencia = 0;                      //variável usada para armazenar a frequencia que será usada no acionamento do buzzer
+int tempo = 100;  //variável usada para definir o tempo de acionamento do buzzer
+int frequencia = 0;
 unsigned long millisTarefa1 = millis();  //variável que recebe o tempo atual em milissegundos
 int temp = 250;
 
+int xz = 0;         // Sorteia musica
+int buzzerPin = 7;  // Buzina
 
-//Config sensores >>>
-
-
-float distanciaObstaculo = 35;
-
-Ultrasonic ultrasonico(Trig, Echo);
-
-int servoPin = 7;
-int servoAngle = 0;
-
-
-char command;  // Comando BLUE
-
-//Servo Motor
-
-//Servo Motor
-
-//Motores Car Blue
-const int motorA1 = 5;  // Pin  5 of L293.
-const int motorA2 = 6;  // Pin  6 of L293.
-
-const int motorB1 = 9;   // Pin 10 of L293.
-const int motorB2 = 10;  // Pin 9 of L293.
-
+int distanciaD;
+int distanciaE;
 
 
 // Variáveis Úteis
@@ -70,74 +26,69 @@ int j = 0;
 int state_rec;
 int vSpeed = 200;  // Define velocidade padrão 0 &lt; x &lt; 255.
 char state;
-//Motores Car Blue
 
 
 
-//Motores Car Auto
-
-
-//Variaveis
-int led1_azul = 0;       // Led1 - Azul Alerta
-int led1_vermelho = 13;  // Led1 - Azul Alerta
-
-//Farol Frente
-int led1_farol_frente = 0;
-int led2_farol_frente = 0;
-
-
-//Farol Traz
-int led1_farol_traz = 13;
-int led2_farol_traz = 13;
+//LEd
+int led1_azul = 13;
 
 
 
+float distanciaObstaculo = 25;
 
-int estadoButton = 0;
-int vezes = 0;
-int xz = 0;  // Musica sorted
+Ultrasonic ultrasonico(Trig, Echo);
+
+Servo servo;
+
+
+const int A1A = 5;
+const int A1B = 6;
+const int B1A = 3;
+const int B1B = 11;
+
+// Define os pinos de utilização do Driver L298.
+const int motorA1 = 5;   // Pin  5 of L293.
+const int motorA2 = 6;   // Pin  6 of L293.
+const int motorB1 = 3;   // Pin 10 of L293.
+const int motorB2 = 11;  // Pin 9 of L293.
 
 
 
 void setup() {
+  Serial.begin(9600);
 
+  servo.attach(pinoServo);
 
-
-  servo.attach(servoPin);
-
-  pinMode(buzzerPin, OUTPUT);
-  pinMode(buttonPin, INPUT);
-
-  //Leds
-  pinMode(led1_farol_frente, OUTPUT);  // Farol frente
-  pinMode(led2_farol_frente, OUTPUT);
-
-  pinMode(led1_farol_traz, OUTPUT);  // Farol Traz
-  pinMode(led2_farol_traz, OUTPUT);  // Farol Traz
-
-  pinMode(led1_vermelho, OUTPUT);
-  pinMode(led1_azul, OUTPUT);
-
-
-  //Config Car BLUE
+  // Inicializa as portas como entrada e saída.
   pinMode(motorA1, OUTPUT);
   pinMode(motorA2, OUTPUT);
   pinMode(motorB1, OUTPUT);
   pinMode(motorB2, OUTPUT);
 
+
+  //pinos da ponte H
+  pinMode(B1A, OUTPUT);
+  pinMode(B1B, OUTPUT);
+  pinMode(A1A, OUTPUT);
+  pinMode(A1B, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+
+  pinMode(led1_azul, OUTPUT);
+
+
+  //Radar();
+  iniciar();
+  naocabeca();
+  cabeca_reta();
   // Inicializa a comunicação serial em 9600 bits.
-  Serial.begin(9600);
-
-  //config Car Auto
-
-
-
-  //Carregando funções >>
 }
 
-
-
 void loop() {
+
+
+
+
+
   if (Serial.available() > 0) {
     state_rec = Serial.read();
     state = state_rec;
@@ -170,14 +121,14 @@ void loop() {
     analogWrite(motorB2, 0);
   }
 
-  else if (state == 'I') {  // Se o estado recebido for igual a 'I', o carro se movimenta para Frente Esquerda.
+  else if (state == 'G') {  // Se o estado recebido for igual a 'I', o carro se movimenta para Frente Esquerda.
     analogWrite(motorA1, vSpeed);
     analogWrite(motorA2, 0);
     analogWrite(motorB1, 100);
     analogWrite(motorB2, 0);
   }
 
-  else if (state == 'G') {  // Se o estado recebido for igual a 'G', o carro se movimenta para Frente Direita.
+  else if (state == 'I') {  // Se o estado recebido for igual a 'G', o carro se movimenta para Frente Direita.
     analogWrite(motorA1, 100);
     analogWrite(motorA2, 0);
     analogWrite(motorB1, vSpeed);
@@ -191,40 +142,138 @@ void loop() {
     analogWrite(motorA2, vSpeed);
   }
 
-  else if (state == 'H') {  // Se o estado recebido for igual a 'H', o carro se movimenta para Trás Esquerda.
+  else if (state == 'J') {  // Se o estado recebido for igual a 'H', o carro se movimenta para Trás Esquerda.
     analogWrite(motorA1, 0);
     analogWrite(motorA2, vSpeed);
     analogWrite(motorB1, 0);
     analogWrite(motorB2, 100);
   }
 
-  else if (state == 'J') {  // Se o estado recebido for igual a 'J', o carro se movimenta para Trás Direita.
+  else if (state == 'H') {  // Se o estado recebido for igual a 'J', o carro se movimenta para Trás Direita.
     analogWrite(motorA1, 0);
     analogWrite(motorA2, 100);
     analogWrite(motorB1, 0);
     analogWrite(motorB2, vSpeed);
   }
 
-  else if (state == 'L') {  // Se o estado recebido for igual a 'L', o carro se movimenta para esquerda.
+  else if (state == 'R') {  // Se o estado recebido for igual a 'L', o carro se movimenta para esquerda.
     analogWrite(motorA1, 0);
     analogWrite(motorA2, vSpeed);
     analogWrite(motorB1, vSpeed);
     analogWrite(motorB2, 0);
-  } else if (state == 'R') {  // Se o estado recebido for igual a 'R', o carro se movimenta para direita.
+  } else if (state == 'L') {  // Se o estado recebido for igual a 'R', o carro se movimenta para direita.
     analogWrite(motorA1, vSpeed);
     analogWrite(motorA2, 0);
     analogWrite(motorB1, 0);
     analogWrite(motorB2, vSpeed);
+
   } else if (state == 'S') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
     analogWrite(motorA1, 0);
     analogWrite(motorA2, 0);
     analogWrite(motorB1, 0);
     analogWrite(motorB2, 0);
   }
+
+  else if (state == 'X') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
+    modAlto();
+  }
+
+  else if (state == 'V') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
+    buzina();
+  }
+
+  else if (state == 'v') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
+    digitalWrite(buzzerPin, LOW);
+
+  } else if (state == 'W') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
+    digitalWrite(led1_azul, HIGH);
+    
+  } else if (state == 'w') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
+    digitalWrite(led1_azul, LOW);
+  }
 }
 
 
+void modAlto() {
+  Serial.println(ultrasonico.Ranging(CM));
+
+  if (ultrasonico.Ranging(CM) <= distanciaObstaculo) {
+    Andar(5);
+    int statuss = Radar();
+    delay(500);
+
+
+    if (statuss == 1) {
+      Andar(2);
+      delay(600);
+      Andar(4);
+      delay(400);
+      Andar(5);
+    }
+    if (statuss == 2) {
+      Andar(2);
+      delay(600);
+      Andar(3);
+      delay(400);
+      Andar(5);
+    }
+    if (statuss == 0) {
+      Andar(2);
+      delay(500);
+      Andar(4);
+      delay(300);
+      Andar(5);
+    }
+    delay(1000);
+  } else {
+    Andar(1);
+  }
+}
+
+
+void Andar(int direcao) {
+
+  direcao = 1;
+  if (direcao == 1) {  // anda pra frente
+    digitalWrite(B1A, HIGH);
+    digitalWrite(B1B, LOW);
+
+    digitalWrite(A1A, HIGH);
+    digitalWrite(A1B, LOW);
+  }
+
+  if (direcao == 2) {  // anda pra trás
+    digitalWrite(B1A, LOW);
+    digitalWrite(B1B, HIGH);
+    digitalWrite(A1A, LOW);
+    digitalWrite(A1B, HIGH);
+  }
+
+  if (direcao == 3) {  // faz curva pra direita
+    digitalWrite(B1A, HIGH);
+    digitalWrite(B1B, LOW);
+    digitalWrite(A1A, LOW);
+    digitalWrite(A1B, HIGH);
+  }
+
+  if (direcao == 4) {  // faz curva pra esquerda
+    digitalWrite(B1A, LOW);
+    digitalWrite(B1B, HIGH);
+    digitalWrite(A1A, HIGH);
+    digitalWrite(A1B, LOW);
+  }
+
+  if (direcao == 5) {  // FREIA
+    digitalWrite(B1A, LOW);
+    digitalWrite(B1B, LOW);
+    digitalWrite(A1A, LOW);
+    digitalWrite(A1B, LOW);
+    buzina();
+  }
+}
+
 int Radar() {
+
   delay(1000);
   servo.write(175);
   delay(1000);
@@ -248,6 +297,7 @@ int Radar() {
     return 0;
   }
 }
+
 
 
 
@@ -300,10 +350,10 @@ void cabeca_reta() {
 void leds() {
   if (millis() - millisTarefa1 > temp) {  //Se o resultado da subtração de millis() - millisTarefa1 for maior que temp (250 milissegundo)
     digitalWrite(led1_azul, HIGH);        //Liga o LED azul
-    digitalWrite(led1_vermelho, LOW);     //Desliga o LED vermelho
+                                          //Desliga o LED vermelho
   } else {                                //Senão
     digitalWrite(led1_azul, LOW);         //Desliga o azul
-    digitalWrite(led1_vermelho, HIGH);    //Liga o LED vermelho
+                                          //Liga o LED vermelho
   }
   if ((millis() - millisTarefa1) > (2 * temp)) {  //Se o resultado da subtração de millis() - millisTarefa1 for maior que 2 vezes temp (500 milissegundo)
     millisTarefa1 = millis();                     //Atribui a millisTarefa1 o valor de millis()
@@ -362,7 +412,7 @@ void buzina() {
   }
 
 
-  else if (xz == 3) {  // Musica JOJO
+  else if (xz == 7) {  // Musica JOJO
     beep(buzzerPin, f5s, Qnote + Enote);
     beep(buzzerPin, d5, Hnote);
     beep(buzzerPin, d5, Snote);
