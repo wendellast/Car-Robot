@@ -4,7 +4,7 @@
 #include "music.h"
 #include "music_jojo.h"
 #include "music_mortal_kobat.h"
-
+//Versão --> 2.0
 #define pinoServo 8
 #define Trig 12
 #define Echo 4
@@ -17,16 +17,16 @@ unsigned long millisTarefa1 = millis();  //variável que recebe o tempo atual em
 int temp = 250;
 
 int xz = 0;         // Sorteia musica
-int buzzerPin = 7; // Buzina
-int speakPin = 7; // Buzina
+int buzzerPin = 7;  // Buzina
+int speakPin = 7;   // Buzina
 
 int distanciaD;
 int distanciaE;
 
-unsigned long tempoLeitura = 0; // VARIAVEL PARA CONTROLAR TEMPO DE LEITURA DO HCSR04
-float distObstaculo = 30;    // VARIÁVEL PARA ARMAZENAR DISTANCIA DOS OBSTÁCULOS
-bool terraFirme;             // VÁRIÁVEL PARA CHECAR SE HÁ CHÃO A FRENTE DO ROBO
-bool perigo = false; 
+unsigned long tempoLeitura = 0;  // VARIAVEL PARA CONTROLAR TEMPO DE LEITURA DO HCSR04
+float distObstaculo = 30;        // VARIÁVEL PARA ARMAZENAR DISTANCIA DOS OBSTÁCULOS
+bool terraFirme;                 // VÁRIÁVEL PARA CHECAR SE HÁ CHÃO A FRENTE DO ROBO
+bool perigo = false;
 
 // Variáveis Úteis
 int i = 0;
@@ -39,6 +39,7 @@ char state;
 
 //LEd
 int led1_azul = 13;
+int led2_vermelho = 10;
 const int ledPin2 = 13;
 const int ledPin1 = 0;
 int counter = 0;
@@ -71,16 +72,16 @@ void setup() {
 
   //pinos da ponte H
   pinMode(buzzerPin, OUTPUT);
-  pinMode(ledPin2, OUTPUT);
   pinMode(led1_azul, OUTPUT);
-  
+  pinMode(led2_vermelho, OUTPUT);
 
-  
+
+
   iniciar();
   naocabeca();
   delay(1000);
   checarPerigo();
-  
+
   // Inicializa a comunicação serial em 9600 bits.
 }
 
@@ -114,13 +115,13 @@ void loop() {
   if (state == 'F') {
     servo.write(90);
     checarPerigo();
-    if(perigo == false){
-    analogWrite(motorB1, vSpeed);
-    analogWrite(motorA1, vSpeed);
-    analogWrite(motorA2, 0);
-    analogWrite(motorB2, 0);
-    } else{
-       analogWrite(motorA1, 0);
+    if (perigo == false) {
+      analogWrite(motorB1, vSpeed);
+      analogWrite(motorA1, vSpeed);
+      analogWrite(motorA2, 0);
+      analogWrite(motorB2, 0);
+    } else {
+      analogWrite(motorA1, 0);
       analogWrite(motorA2, 0);
       analogWrite(motorB1, 0);
       analogWrite(motorB2, 0);
@@ -130,12 +131,12 @@ void loop() {
   else if (state == 'G') {  // Se o estado recebido for igual a 'I', o carro se movimenta para Frente Esquerda.
     servo.write(140);
     checarPerigo();
-    if(perigo == false){
-    analogWrite(motorA1, vSpeed);
-    analogWrite(motorA2, 0);
-    analogWrite(motorB1, 100);
-    analogWrite(motorB2, 0);
-    } else{
+    if (perigo == false) {
+      analogWrite(motorA1, vSpeed);
+      analogWrite(motorA2, 0);
+      analogWrite(motorB1, 100);
+      analogWrite(motorB2, 0);
+    } else {
       analogWrite(motorA1, 0);
       analogWrite(motorA2, 0);
       analogWrite(motorB1, 0);
@@ -146,12 +147,12 @@ void loop() {
   else if (state == 'I') {  // Se o estado recebido for igual a 'G', o carro se movimenta para Frente Direita.
     servo.write(40);
     checarPerigo();
-    if(perigo == false){
-    analogWrite(motorA1, 100);
-    analogWrite(motorA2, 0);
-    analogWrite(motorB1, vSpeed);
-    analogWrite(motorB2, 0);
-    } else{
+    if (perigo == false) {
+      analogWrite(motorA1, 100);
+      analogWrite(motorA2, 0);
+      analogWrite(motorB1, vSpeed);
+      analogWrite(motorB2, 0);
+    } else {
       analogWrite(motorA1, 0);
       analogWrite(motorA2, 0);
       analogWrite(motorB1, 0);
@@ -186,12 +187,12 @@ void loop() {
   else if (state == 'R') {  // Se o estado recebido for igual a 'L', o carro se movimenta para esquerda.
     servo.write(30);
     checarPerigo();
-    if(perigo == false){
-    analogWrite(motorA1, 0);
-    analogWrite(motorA2, vSpeed);
-    analogWrite(motorB1, vSpeed);
-    analogWrite(motorB2, 0);
-    } else{
+    if (perigo == false) {
+      analogWrite(motorA1, 0);
+      analogWrite(motorA2, vSpeed);
+      analogWrite(motorB1, vSpeed);
+      analogWrite(motorB2, 0);
+    } else {
       analogWrite(motorA1, 0);
       analogWrite(motorA2, 0);
       analogWrite(motorB1, 0);
@@ -201,12 +202,12 @@ void loop() {
   } else if (state == 'L') {  // Se o estado recebido for igual a 'R', o carro se movimenta para direita.
     servo.write(150);
     checarPerigo();
-    if(perigo == false){
-    analogWrite(motorA1, vSpeed);
-    analogWrite(motorA2, 0);
-    analogWrite(motorB1, 0);
-    analogWrite(motorB2, vSpeed);
-    } else{
+    if (perigo == false) {
+      analogWrite(motorA1, vSpeed);
+      analogWrite(motorA2, 0);
+      analogWrite(motorB1, 0);
+      analogWrite(motorB2, vSpeed);
+    } else {
       analogWrite(motorA1, 0);
       analogWrite(motorA2, 0);
       analogWrite(motorB1, 0);
@@ -221,7 +222,7 @@ void loop() {
     analogWrite(motorB2, 0);
   }
 
-  else if (state == 'V') {  
+  else if (state == 'V') {
     buzina();
   }
 
@@ -232,10 +233,22 @@ void loop() {
   } else if (state == 'W') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
     digitalWrite(led1_azul, HIGH);
 
-  } else if (state == 'w') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
-    digitalWrite(led1_azul, LOW);
   }
-  
+
+  else if (state == 'w') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
+    digitalWrite(led1_azul, LOW);
+  } else if (state == 'U') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
+    digitalWrite(led2_vermelho, HIGH);
+
+  }
+
+  else if (state == 'u') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
+    digitalWrite(led2_vermelho, LOW);
+  }
+  else if (state == 'X'){
+    naocabeca();
+    
+  }
 }
 
 
@@ -261,18 +274,18 @@ void iniciar() {
 
 
 //FUNÇÃO PARA CHECAR PERIGO
-void checarPerigo(){
-  if ( (millis() - tempoLeitura) > 500){ // LER DISTANCIA A CADA 500 MILISEGUNDOS
-      distObstaculo = sensorDistancia.dist(); // LEITURA DA DISTÂNCIA EM CM DO OBSTÁCULO À FRENTE
-      tempoLeitura = millis(); // ATRIBUI O VALOR ATUAL DE MILLIS À VARIÁVEL DE CONTROLE
-      Serial.println(distObstaculo);
+void checarPerigo() {
+  if ((millis() - tempoLeitura) > 500) {     // LER DISTANCIA A CADA 500 MILISEGUNDOS
+    distObstaculo = sensorDistancia.dist();  // LEITURA DA DISTÂNCIA EM CM DO OBSTÁCULO À FRENTE
+    tempoLeitura = millis();                 // ATRIBUI O VALOR ATUAL DE MILLIS À VARIÁVEL DE CONTROLE
+    Serial.println(distObstaculo);
   }
-  
-  
-  
-  if ( (distObstaculo < minDist)) { // PARA O ROBO CASO NÃO TENHA CHÃO OU ENCONTRE UM OBSTÁCULO PERTO
+
+
+
+  if ((distObstaculo < minDist)) {  // PARA O ROBO CASO NÃO TENHA CHÃO OU ENCONTRE UM OBSTÁCULO PERTO
     if (!perigo) {
-      perigo = true; // GUARDA VALOR PARADO PARA LEMBRAR QUE TEM OBSTÁCULO À FRENTE DURANTE A PRÓXIMA EXECUÇÃO DO LOOP
+      perigo = true;  // GUARDA VALOR PARADO PARA LEMBRAR QUE TEM OBSTÁCULO À FRENTE DURANTE A PRÓXIMA EXECUÇÃO DO LOOP
       naocabeca();
       buzi_alert();
       analogWrite(motorA1, 0);
@@ -282,7 +295,7 @@ void checarPerigo(){
     }
   } else {
     perigo = false;
-  }  
+  }
 }
 
 
@@ -305,15 +318,17 @@ void naocabeca() {
 void leds() {
   if (millis() - millisTarefa1 > temp) {  //Se o resultado da subtração de millis() - millisTarefa1 for maior que temp (250 milissegundo)
     digitalWrite(led1_azul, HIGH);        //Liga o LED azul
-                                          //Desliga o LED vermelho
+    digitalWrite(led2_vermelho, LOW);     //Desliga o LED vermelho
   } else {                                //Senão
     digitalWrite(led1_azul, LOW);         //Desliga o azul
-                                          //Liga o LED vermelho
+    digitalWrite(led2_vermelho, HIGH); 
+    digitalWrite(led2_vermelho, LOW);    //Liga o LED vermelho
   }
   if ((millis() - millisTarefa1) > (2 * temp)) {  //Se o resultado da subtração de millis() - millisTarefa1 for maior que 2 vezes temp (500 milissegundo)
     millisTarefa1 = millis();                     //Atribui a millisTarefa1 o valor de millis()
   }
 }
+
 
 void beep(int speakerPin, float noteFrequency, long noteDuration) {
   int x;
@@ -330,8 +345,30 @@ void beep(int speakerPin, float noteFrequency, long noteDuration) {
   }
 }
 
-void buzi_alert(){
-  tone (buzzerPin, 440,1000);
+void buzi_alert() {
+  digitalWrite(led2_vermelho, HIGH); 
+  delay(100);
+  digitalWrite(led2_vermelho, LOW); 
+  
+  
+   
+  beep(buzzerPin, note_A7, 100);  //A
+    beep(buzzerPin, note_G7, 100);  //G
+    beep(buzzerPin, note_E7, 100);  //E
+    beep(buzzerPin, note_C7, 100);  //C
+    beep(buzzerPin, note_D7, 100);  //D
+    beep(buzzerPin, note_B7, 100);  //B
+    beep(buzzerPin, note_F7, 100);  //F
+    beep(buzzerPin, note_C8, 100);  //C
+    beep(buzzerPin, note_A7, 100);  //A
+    beep(buzzerPin, note_G7, 100);  //G
+    beep(buzzerPin, note_E7, 100);  //E
+    beep(buzzerPin, note_C7, 100);  //C
+    beep(buzzerPin, note_D7, 100);  //D
+    beep(buzzerPin, note_B7, 100);  //B
+    beep(buzzerPin, note_F7, 100);  //F
+    beep(buzzerPin, note_C8, 100);  //C
+  
 }
 
 void buzina() {
@@ -374,107 +411,107 @@ void buzina() {
 
   else if (xz == 3) {  // Musica JOJO
     tone(speakPin, f5s);
-    delay(Qnote+Enote);
+    delay(Qnote + Enote);
     noTone(speakPin);
     delay(50);
-  
+
     tone(speakPin, d5);
     delay(Hnote);
     noTone(speakPin);
     delay(50);
-  
+
     tone(speakPin, d5);
     delay(Snote);
     noTone(speakPin);
     delay(12.5);
-  
+
     tone(speakPin, e5);
     delay(Snote);
     noTone(speakPin);
     delay(50);
-  
+
     tone(speakPin, f5);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, e5);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, d5);
     delay(Enote);
     noTone(speakPin);
     delay(50);
-  
+
     tone(speakPin, c5s);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, d5);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, e5);
     delay(Enote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, f5s);
-    delay(Qnote+Enote);
+    delay(Qnote + Enote);
     noTone(speakPin);
     delay(50);
-  
+
     tone(speakPin, b5);
-    delay(Qnote+Enote);
+    delay(Qnote + Enote);
     noTone(speakPin);
     delay(50);
-  
+
     tone(speakPin, b4);
     delay(Enote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, c5s);
     delay(Enote);
     noTone(speakPin);
     delay(50);
-  
+
     tone(speakPin, d5);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, e5);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, d5);
     delay(Enote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, c5s);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, a5);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
-  
+
     tone(speakPin, g5);
     delay(Enote);
     noTone(speakPin);
     delay(50);
 
     tone(speakPin, f6s);
-    delay(Qnote+Enote);
+    delay(Qnote + Enote);
     noTone(speakPin);
     delay(50);
 
@@ -494,12 +531,12 @@ void buzina() {
     delay(50);
 
     tone(speakPin, f6);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
 
     tone(speakPin, e6);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
 
@@ -509,12 +546,12 @@ void buzina() {
     delay(50);
 
     tone(speakPin, c6s);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
 
     tone(speakPin, d6);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
 
@@ -524,12 +561,12 @@ void buzina() {
     delay(25);
 
     tone(speakPin, f6s);
-    delay(Qnote+Enote);
+    delay(Qnote + Enote);
     noTone(speakPin);
     delay(50);
 
     tone(speakPin, b6);
-    delay(Qnote+Enote);
+    delay(Qnote + Enote);
     noTone(speakPin);
     delay(50);
 
@@ -544,12 +581,12 @@ void buzina() {
     delay(25);
 
     tone(speakPin, d7);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
 
     tone(speakPin, g6);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
 
@@ -559,12 +596,12 @@ void buzina() {
     delay(50);
 
     tone(speakPin, f6);
-    delay(Snote+Enote);
+    delay(Snote + Enote);
     noTone(speakPin);
     delay(25);
 
     tone(speakPin, d7);
-    delay(Enote+Snote);
+    delay(Enote + Snote);
     noTone(speakPin);
     delay(25);
 
@@ -579,46 +616,41 @@ void buzina() {
     delay(25);
   }
 
-  else if (xz ==4){
+  else if (xz == 4) {  // Music Mortal kobat
     firstSection();
     firstSection();
     secondSection();
     thirdSection();
     thirdSection();
   }
-
 }
 
-void beep(int note, int duration)
-{
+void beep(int note, int duration) {
   //Play tone on buzzerPin
   tone(buzzerPin, note, duration);
- 
- 
+
+
   //Play different LED depending on value of 'counter'
-  if(counter % 2 == 0)
-  {
-    digitalWrite(ledPin1, HIGH);
+  if (counter % 2 == 0) {
+    digitalWrite(led1_azul, HIGH);
     delay(duration);
-    digitalWrite(ledPin1, LOW);
-  }else
-  {
-    digitalWrite(ledPin2, HIGH);
+    digitalWrite(led1_azul, LOW);
+  } else {
+    digitalWrite(led2_vermelho, HIGH);
     delay(duration);
-    digitalWrite(ledPin2, LOW);
+    digitalWrite(led2_vermelho, LOW);
   }
- 
+
   //Stop tone on buzzerPin
   noTone(buzzerPin);
- 
+
   delay(50);
- 
+
   //Increment counter
   counter++;
 }
- 
-void firstSection()
-{
+
+void firstSection() {
   beep(AA3, 200);
   beep(AA3, 200);
   beep(C4, 200);
@@ -651,10 +683,8 @@ void firstSection()
   beep(F3, 200);
   beep(C4, 200);
   beep(B3, 200);
-  
 }
-void secondSection()
-{
+void secondSection() {
   beep(AA3, 325);
   beep(AA3, 325);
   beep(AA3, 325);
@@ -681,8 +711,7 @@ void secondSection()
   beep(AA3, 450);
 }
 
-void thirdSection()
-{
+void thirdSection() {
   beep(AA3, 75);
   beep(E4, 200);
   beep(AA3, 75);
