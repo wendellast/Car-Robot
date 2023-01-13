@@ -113,7 +113,7 @@ void loop() {
 
   // Se o estado recebido for igual a 'F', o carro se movimenta para frente.
   if (state == 'F') {
-    servo.write(90);
+    //servo.write(90);
     checarPerigo();
     if (perigo == false) {
       analogWrite(motorB1, vSpeed);
@@ -129,7 +129,7 @@ void loop() {
   }
 
   else if (state == 'G') {  // Se o estado recebido for igual a 'I', o carro se movimenta para Frente Esquerda.
-    servo.write(140);
+    //servo.write(140);
     checarPerigo();
     if (perigo == false) {
       analogWrite(motorA1, vSpeed);
@@ -145,7 +145,7 @@ void loop() {
   }
 
   else if (state == 'I') {  // Se o estado recebido for igual a 'G', o carro se movimenta para Frente Direita.
-    servo.write(40);
+    //servo.write(40);
     checarPerigo();
     if (perigo == false) {
       analogWrite(motorA1, 100);
@@ -161,7 +161,7 @@ void loop() {
   }
 
   else if (state == 'B') {  // Se o estado recebido for igual a 'B', o carro se movimenta para trás.
-    servo.write(90);
+    //servo.write(90);
     analogWrite(motorA1, 0);
     analogWrite(motorB1, 0);
     analogWrite(motorB2, vSpeed);
@@ -169,7 +169,7 @@ void loop() {
   }
 
   else if (state == 'J') {  // Se o estado recebido for igual a 'H', o carro se movimenta para Trás Esquerda.
-    servo.write(90);
+    //servo.write(90);
     analogWrite(motorA1, 0);
     analogWrite(motorA2, vSpeed);
     analogWrite(motorB1, 0);
@@ -177,7 +177,7 @@ void loop() {
   }
 
   else if (state == 'H') {  // Se o estado recebido for igual a 'J', o carro se movimenta para Trás Direita.
-    servo.write(90);
+    //servo.write(90);
     analogWrite(motorA1, 0);
     analogWrite(motorA2, 100);
     analogWrite(motorB1, 0);
@@ -185,7 +185,7 @@ void loop() {
   }
 
   else if (state == 'R') {  // Se o estado recebido for igual a 'L', o carro se movimenta para esquerda.
-    servo.write(30);
+    //servo.write(30);
     checarPerigo();
     if (perigo == false) {
       analogWrite(motorA1, 0);
@@ -200,7 +200,7 @@ void loop() {
     }
 
   } else if (state == 'L') {  // Se o estado recebido for igual a 'R', o carro se movimenta para direita.
-    servo.write(150);
+    //servo.write(150);
     checarPerigo();
     if (perigo == false) {
       analogWrite(motorA1, vSpeed);
@@ -215,7 +215,7 @@ void loop() {
     }
 
   } else if (state == 'S') {  // Se o estado recebido for igual a 'S', o carro permanece parado.
-    servo.write(90);
+    //servo.write(90);
     analogWrite(motorA1, 0);
     analogWrite(motorA2, 0);
     analogWrite(motorB1, 0);
@@ -286,7 +286,6 @@ void checarPerigo() {
   if ((distObstaculo < minDist)) {  // PARA O ROBO CASO NÃO TENHA CHÃO OU ENCONTRE UM OBSTÁCULO PERTO
     if (!perigo) {
       perigo = true;  // GUARDA VALOR PARADO PARA LEMBRAR QUE TEM OBSTÁCULO À FRENTE DURANTE A PRÓXIMA EXECUÇÃO DO LOOP
-      naocabeca();
       buzi_alert();
       analogWrite(motorA1, 0);
       analogWrite(motorA2, 0);
